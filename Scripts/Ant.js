@@ -1,34 +1,41 @@
 function Ant(x, y, antHill){
-    this.x = x;
-    this.y = y;
     this.antHill = antHill;
     
-    this.vX = 0;
-    this.vY = 0;
-    this.rotation = 0;
+    this.velocity = new Vector(0, 0);
     this.maxSpeed = .6;
-    
-    this.img = new Image();
-    this.img.src = "Images/Ant.png";
-    this.img.width = 14;
-    this.img.height = 7;
+
+    Entity.call(this, x, y, "Images/Ant.png", 14, 7);
 }
 
-Ant.prototype.update = function(){
-    this.x += this.vX;
-    this.y += this.vY;
+Ant.inheritsFrom(Entity);
+
+Ant.prototype.update = function(food){
+    var closestFood = this.closestFood(food);
     
-    this.rotation = Math.atan2(this.vY, this.vX);
+    this.velocity = Vector.prototype.subtract2(closestFood.position, 
+                                     this.position);
+    
+    this.velocity.scale(this.maxSpeed);
+    
+    this.position.add(this.velocity);
+    
+    this.rotation = Math.atan2(this.velocity.y, this.velocity.x);
 };
 
-Ant.prototype.render = function(context){
-    //Save the current position of the "pen", 
-    //so that we can return to a default state
-    context.save();
-    //Move the pen in to position
-    context.translate(this.x, this.y);
-    //Draw the image centered at the pens position
-    context.drawImage(this.img, -(this.img.width/2), -(this.img.height/2));
-    //Restore the previous state of the context
-    context.restore();
+Ant.prototype.closestFood = function(food){
+    var closestFood = food[0],
+        closestDistance = Vector.prototype.squaredDistanceBetween(this.position, 
+                                           closestFood.position),
+        tempDistance = closestDistance;
+
+    for(var i = 1, l = food.length; i < l; i++){
+        tempDistance = Vector.prototype.squaredDistanceBetween(this.position, 
+                                        food[i].position);
+        if(tempDistance < closestDistance){
+            closestFood = food[i];
+            closestDistance = tempDistance;
+        }
+    }
+    
+    return closestFood;
 };

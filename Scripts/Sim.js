@@ -11,7 +11,7 @@ function setup() {
 
 function update() {
     //Do updating of simulation here
-    antHill.update();
+    antHill.update(food);
     food.forEach(f => f.update());
     
     //Call update 10 milliseconds after this point
