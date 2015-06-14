@@ -25,6 +25,12 @@ Vector.prototype.scale = function(l){
     this.multiply(scaleFactor);
 };
 
+Vector.prototype.setAngle = function(angle){
+    var len = this.length();
+    this.x = Math.cos(angle) * len;
+    this.y = Math.sin(angle) * len;
+};
+
 Vector.prototype.subtract2 = function(a, b){
     if (!(a instanceof Vector) || !(b instanceof Vector)){
         throw new Exception("a and b must be vectors");
@@ -53,4 +59,32 @@ Vector.prototype.squaredDistanceBetween = function(a,b){
     var dy = a.y - b.y;
     
     return (dx*dx)+(dy*dy);
+};
+
+Vector.prototype.average = function(vectors){
+    var avgVector = new Vector(vectors[0].x, vectors[0].y);
+
+    for (var v = 1, vMax = vectors.length; v < vMax; v++){
+        avgVector.add(vectors[v]);
+    }
+    avgVector.multiply(1 / vMax);
+
+    return avgVector;
+};
+
+Vector.prototype.withinDistance = function(v1, v2, d){
+    if (!(v1 instanceof Vector) || !(v2 instanceof Vector)){
+        throw new Exception("v1 and v2 must be vectors");
+    }
+
+    //If the difference in x and y values is greater
+    // than d we know they are too far apart
+    if (Math.abs(v1.x - v2.x) > d) return false;
+    if (Math.abs(v1.y - v2.y) > d) return false;
+
+    //Square the distance so we don't need to calculate a square root
+    d = (d * d);
+
+    return Vector.prototype.squaredDistanceBetween(v1, v2) <= d;
+
 };

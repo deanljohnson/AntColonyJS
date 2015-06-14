@@ -12,8 +12,8 @@ function AntHill (x, y){
 
 AntHill.inheritsFrom(Entity);
 
-AntHill.prototype.update = function(food){
-    this.ants.forEach(a => a.update(food));
+AntHill.prototype.update = function(food, pheromoneManager){
+    this.ants.forEach(a => a.update(food, pheromoneManager));
 };
 
 AntHill.prototype.render = function(context){

@@ -1,6 +1,7 @@
 var canvas = document.getElementById("antColonyCanvas"),
     antHill = new AntHill(canvas.width / 2, canvas.height / 2),
-    food = [];
+    food = [],
+    pheromoneManager = new PheromoneManager();
 
 function setup() {
     for (var f = 0, fMax = 20; f < fMax; f++){
@@ -11,11 +12,12 @@ function setup() {
 
 function update() {
     //Do updating of simulation here
-    antHill.update(food);
+    antHill.update(food, pheromoneManager);
     food.forEach(f => f.update());
+    pheromoneManager.update();
     
-    //Call update 10 milliseconds after this point
-    setTimeout(update, 10);
+    //Call update at 60 fps
+    setTimeout(update, (1000 / 60));
 }
 
 function draw() {
@@ -27,7 +29,7 @@ function draw() {
     food.forEach(f => f.render(context));
     
     //Draw at monitor refresh rate
-    requestAnimationFrame(draw, canvas);
+    requestAnimationFrame(draw);
 }
 
 setup();
