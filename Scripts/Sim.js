@@ -14,8 +14,8 @@ function update() {
     antHill.update();
     food.forEach(f => f.update());
     
-    //Call update 10 milliseconds after this point
-    setTimeout(update, 10);
+    //Call update at 60 fps
+    setTimeout(update, (1000 / 60));
 }
 
 function draw() {
@@ -27,7 +27,7 @@ function draw() {
     food.forEach(f => f.render(context));
     
     //Draw at monitor refresh rate
-    requestAnimationFrame(draw, canvas);
+    requestAnimationFrame(draw);
 }
 
 setup();
