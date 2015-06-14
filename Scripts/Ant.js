@@ -4,19 +4,23 @@ function Ant(x, y, antHill){
     this.velocity = new Vector(0, 0);
     this.maxSpeed = .6;
 
+    this.steerer = new Steerer();
+
     Entity.call(this, x, y, "Images/Ant.png", 14, 7);
 }
 
 Ant.inheritsFrom(Entity);
 
-Ant.prototype.update = function(food){
+Ant.prototype.update = function(food, pheromoneManager){
     var closestFood = this.closestFood(food);
-    
-    this.velocity = Vector.prototype.subtract2(closestFood.position, 
-                                     this.position);
-    
+
+    //this.velocity.add(this.steerer.seek(this.position, closestFood.position,
+                                       //this.velocity, this.maxSpeed));
+
+    this.velocity.add(this.steerer.wander(this.velocity));
+
     this.velocity.scale(this.maxSpeed);
-    
+
     this.position.add(this.velocity);
     
     this.rotation = Math.atan2(this.velocity.y, this.velocity.x);
