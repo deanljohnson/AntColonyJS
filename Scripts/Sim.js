@@ -3,7 +3,7 @@ var AntColony = (function (AntColony) {
     var canvas = document.getElementById("antColonyCanvas"),
         antHill = AntColony.createAntHill(canvas.width / 2, canvas.height / 2),
         food = [],
-        foodManager = AntColony.createFoodManager(50, canvas.width, canvas.height),
+        foodManager = AntColony.createFoodManager(30, canvas.width, canvas.height),
         pheromoneManager = AntColony.createPheromoneManager();
 
     function update() {
