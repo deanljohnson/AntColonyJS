@@ -1,57 +1,73 @@
 var AntColony = (function (AntColony) {
     "use strict";
     function createPheromoneManager() {
-        var pheromones = [],
+        var foodPheromones = [],
+	        homePheromones = [],
             pheromoneDispersion = 6,
             that = {};
 
         function removeEvaporatedPheromones() {
             var p, l;
-            for (p = 0, l = pheromones.length; p < l; p++) {
-                if (pheromones[p].getStrength() < 0) {
-                    pheromones.splice(p, 1);
+            for (p = 0, l = foodPheromones.length; p < l; p++) {
+                if (foodPheromones[p].getStrength() < 0) {
+	                foodPheromones.splice(p, 1);
                     p--;
                     l--;
                 }
             }
         }
 
-        that.addPheromone = function (pos, dir) {
-            var newPheromone = AntColony.createPheromone(pos.x, pos.y, dir.x, dir.y),
-                p,
-                l;
-            for (p = 0, l = pheromones.length; p < l; p++) {
-                if (AntColony.Vector.prototype.withinDistance(pheromones[p].position,
-                        newPheromone.position, pheromoneDispersion)) {
-                    pheromones[p].combine(newPheromone);
-                    return;
-                }
-            }
+        that.addPheromone = function (pos, dir, type) {
+            var newPheromone = AntColony.createPheromone(pos.x, pos.y, dir.x, dir.y, type),
+                p, //counter for pheromone index
+	            l, //max length of pheromone list
+	            pheromones; //the array of pheromones to add to
 
-            pheromones.push(newPheromone);
+	        type = type || "food";
+
+	        if (type === "food") {
+		        pheromones = foodPheromones;
+	        } else if (type === "home") {
+		        pheromones = homePheromones;
+	        }
+
+	        for (p = 0, l = pheromones.length; p < l; p++) {
+		        if (AntColony.Vector.withinDistance(pheromones[p].position,
+				        newPheromone.position, pheromoneDispersion)) {
+			        pheromones[p].combine(newPheromone);
+			        return;
+		        }
+	        }
+
+	        pheromones.push(newPheromone);
         };
 
-        that.getPheromoneDirection = function (pos, range) {
+        that.getPheromoneDirection = function (pos, range, type) {
             var pheromoneDirections = [],
-                p,
+	            pheromones,
+	            p,
                 l;
 
+	        type = type || "food";
+
+	        if (type === "food") {
+		        pheromones = foodPheromones;
+	        } else if (type === "home") {
+		        pheromones = homePheromones;
+	        }
+
             for (p = 0, l = pheromones.length; p < l; p++) {
-                if (AntColony.Vector.prototype.withinDistance(pheromones[p].position,
+                if (AntColony.Vector.withinDistance(pheromones[p].position,
                         pos, range)) {
                     pheromoneDirections.push(pheromones[p].direction);
                 }
             }
 
-            if (pheromoneDirections.length > 0) {
-                return AntColony.Vector.prototype.average(pheromoneDirections);
-            }
-
-            return new AntColony.Vector(0, 0);
+            return AntColony.Vector.average(pheromoneDirections);
         };
 
         that.update = function () {
-            pheromones.forEach(p => p.update());
+	        foodPheromones.forEach(p => p.update());
             removeEvaporatedPheromones();
         };
 
@@ -121,4 +137,4 @@ var AntColony = (function (AntColony) {
  AntColony.PheromoneManager = PheromoneManager;
 
  return AntColony;
- }(AntColony || {}));*/
+ }(AntColony || {}));*/}(AntColony || {}));
