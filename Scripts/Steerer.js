@@ -1,16 +1,16 @@
 var AntColony = (function (AntColony) {
     "use strict";
     function Steerer() {
-        this.wanderCircleDistance = 40;
-        this.wanderCirlceRadius = 10;
+        this.wanderCircleDistance = 10;
+        this.wanderCirlceRadius = 5;
         this.wanderAngle = 1;
-        this.wanderAngleChange = 1;
+        this.wanderAngleChange = 1.5;
     }
 
     Steerer.prototype.seek = function (position, target, velocity, maxSpeed) {
-        var difVector = AntColony.Vector.prototype.subtract2(target, position);
+        var difVector = AntColony.Vector.subtract2(target, position);
         difVector.scale(maxSpeed);
-        return AntColony.Vector.prototype.subtract2(difVector, velocity);
+        return AntColony.Vector.subtract2(difVector, velocity);
     };
 
     Steerer.prototype.wander = function (velocity) {
