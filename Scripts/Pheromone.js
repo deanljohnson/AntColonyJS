@@ -19,8 +19,8 @@ var AntColony = (function (AntColony) {
                 throw new Exception("The other object does not have the required properties");
             }
 
-            var avgPos = AntColony.Vector.prototype.average([position, other.position]),
-                avgDir = AntColony.Vector.prototype.average([direction, other.direction]),
+            var avgPos = AntColony.Vector.average([position, other.position]),
+                avgDir = AntColony.Vector.average([direction, other.direction]),
                 newStrength = strength + other.getStrength();
             newStrength = (newStrength > 100) ? 100 : newStrength;
 
