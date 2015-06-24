@@ -35,4 +35,3 @@ var AntColony = (function (AntColony) {
 
     return AntColony;
 }(AntColony || {}));
-
