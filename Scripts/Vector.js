@@ -8,6 +8,8 @@ var AntColony = (function (AntColony) {
     Vector.prototype.add = function (v) {
         this.x += v.x;
         this.y += v.y;
+
+	    return this;
     };
 
     Vector.prototype.length = function () {
@@ -17,6 +19,8 @@ var AntColony = (function (AntColony) {
     Vector.prototype.multiply = function (value) {
         this.x *= value;
         this.y *= value;
+
+	    return this;
     };
 
     Vector.prototype.scale = function (l) {
@@ -24,25 +28,29 @@ var AntColony = (function (AntColony) {
             scaleFactor = length === 0 ? 0 : l / length;
 
         this.multiply(scaleFactor);
+
+	    return this;
     };
 
     Vector.prototype.setAngle = function (angle) {
         var len = this.length();
         this.x = Math.cos(angle) * len;
         this.y = Math.sin(angle) * len;
+
+	    return this;
     };
 
-    Vector.prototype.subtract2 = function (a, b) {
+    Vector.subtract2 = function (a, b) {
         if (!(a instanceof Vector) || !(b instanceof Vector)) {
-            throw new Exception("a and b must be vectors");
+            throw new Error("a and b must be vectors");
         }
 
         return new Vector(a.x - b.x, a.y - b.y);
     };
 
-    Vector.prototype.distanceBetween = function (a, b) {
+    Vector.distanceBetween = function (a, b) {
         if (!(a instanceof Vector) || !(b instanceof Vector)) {
-            throw new Exception("a and b must be Vectors");
+            throw new Error("a and b must be Vectors");
         }
 
         var dx = a.x - b.x,
@@ -51,9 +59,9 @@ var AntColony = (function (AntColony) {
         return Math.sqrt((dx * dx) + (dy * dy));
     };
 
-    Vector.prototype.squaredDistanceBetween = function (a, b) {
+    Vector.squaredDistanceBetween = function (a, b) {
         if (!(a instanceof Vector) || !(b instanceof Vector)) {
-            throw new Exception("a and b must be Vectors");
+            throw new Error("a and b must be Vectors");
         }
 
         var dx = a.x - b.x,
@@ -62,7 +70,11 @@ var AntColony = (function (AntColony) {
         return (dx * dx) + (dy * dy);
     };
 
-    Vector.prototype.average = function (vectors) {
+    Vector.average = function (vectors) {
+	    if (vectors.length === 0) {
+		    return new Vector(0, 0);
+	    }
+
         var avgVector = new Vector(vectors[0].x, vectors[0].y),
             v,
             vMax;
@@ -75,9 +87,9 @@ var AntColony = (function (AntColony) {
         return avgVector;
     };
 
-    Vector.prototype.withinDistance = function (v1, v2, d) {
+    Vector.withinDistance = function (v1, v2, d) {
         if (!(v1 instanceof Vector) || !(v2 instanceof Vector)){
-            throw new Exception("v1 and v2 must be vectors");
+            throw new Error("v1 and v2 must be vectors");
         }
 
         //If the difference in x and y values is greater
@@ -88,7 +100,7 @@ var AntColony = (function (AntColony) {
         //Square the distance so we don't need to calculate a square root
         d = (d * d);
 
-        return Vector.prototype.squaredDistanceBetween(v1, v2) <= d;
+        return Vector.squaredDistanceBetween(v1, v2) <= d;
     };
 
     AntColony.Vector = Vector;
