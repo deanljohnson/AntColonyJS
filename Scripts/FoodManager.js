@@ -21,14 +21,14 @@ var AntColony = (function (AntColony) {
 
 	    that.closestFood = function (pos) {
 		    var closestFoodItem = food[0],
-			    closestDistance = AntColony.Vector.prototype.squaredDistanceBetween(pos,
+			    closestDistance = AntColony.Vector.squaredDistanceBetween(pos,
 				    closestFoodItem.position),
 			    tempDistance = closestDistance,
 			    i,
 			    l;
 
 		    for (i = 1, l = food.length; i < l; i++) {
-			    tempDistance = AntColony.Vector.prototype.squaredDistanceBetween(pos,
+			    tempDistance = AntColony.Vector.squaredDistanceBetween(pos,
 				    food[i].position);
 			    if (tempDistance < closestDistance) {
 				    closestFoodItem = food[i];
