@@ -10,8 +10,8 @@ var AntColony = (function (AntColony) {
             that = AntColony.createEntity(x, y, "Images/Ant.png", 14, 7);
 
         //region Private Methods
-        function doReturnHomeBehavior(pheromoneManager) {
-            if (AntColony.Vector.prototype.withinDistance(that.position, antHill.position, pickupRadius)) {
+        function doReturnHomeBehavior(addPheromoneFunc) {
+            if (AntColony.Vector.withinDistance(that.position, antHill.position, pickupRadius)) {
                 holdingFood = false;
                 return;
             }
@@ -21,8 +21,7 @@ var AntColony = (function (AntColony) {
             //Add a weak wander force so that our movement isn't
             //perfectly linear. Also we add a little randomness to pheromone direction
             var wanderForce = steerer.wander(velocity);
-            wanderForce.multiply(0.5);
-            velocity.add(wanderForce);
+            velocity.add(wanderForce.multiply(0.5));
 
             //Direction for pheromone is opposite the Ant's velocity
             //it he is returning home
@@ -30,34 +29,44 @@ var AntColony = (function (AntColony) {
             var pheromoneDir = new AntColony.Vector(velocity.x, velocity.y);
             pheromoneDir.multiply(-1);
 
-            pheromoneManager.addPheromone(that.position, pheromoneDir);
+	        addPheromoneFunc(that.position, pheromoneDir, "food");
         }
-        function doFoodSearchBehavior(closestFoodItem, pheromoneManager) {
-            var distToFood = AntColony.Vector.prototype.distanceBetween(that.position, closestFoodItem.position);
+        function doFoodSearchBehavior(closestFoodItem, pheromoneDirectionFunc, addPheromoneFunc) {
+            var distToFood = AntColony.Vector.distanceBetween(that.position, closestFoodItem.position);
 
             if (distToFood < pickupRadius) {
-                holdingFood = true;
-                closestFoodItem.takeFoodBit();
+	            grabFood(closestFoodItem);
             } else if (distToFood < smellRadius) {
-                velocity.add(steerer.seek(that.position, closestFoodItem.position, velocity, maxSpeed));
+	            approachFood(closestFoodItem, addPheromoneFunc);
             } else {
-                //noinspection JSLint
-                var pheromoneDir = pheromoneManager.getPheromoneDirection(that.position, smellRadius);
-
-                if (pheromoneDir.x === 0 && pheromoneDir.y === 0) {
-                    velocity.add(steerer.wander(velocity));
-                    return;
-                }
-                velocity = pheromoneDir;
+	            followPheromoneOrWander(pheromoneDirectionFunc);
             }
         }
         function setVelocity(closestFoodItem, pheromoneManager) {
             if (holdingFood) {
-                doReturnHomeBehavior(pheromoneManager);
+                doReturnHomeBehavior(pheromoneManager.addPheromone.bind(pheromoneManager));
             } else {
-                doFoodSearchBehavior(closestFoodItem, pheromoneManager);
+                doFoodSearchBehavior(closestFoodItem, pheromoneManager.getPheromoneDirection.bind(pheromoneManager),
+	                                                pheromoneManager.addPheromone.bind(pheromoneManager));
             }
         }
+	    function grabFood(closestFoodItem) {
+		    holdingFood = true;
+		    closestFoodItem.takeFoodBit();
+	    }
+	    function approachFood(closestFoodItem, addPheromoneFunc) {
+		    velocity.add(steerer.seek(that.position, closestFoodItem.position, velocity, maxSpeed));
+		    addPheromoneFunc(that.position, velocity, "food");
+	    }
+	    function followPheromoneOrWander(pheromoneDirectionFunc) {
+		    var pheromoneDir = pheromoneDirectionFunc(that.position, smellRadius);
+		    pheromoneDir.scale(maxSpeed);
+
+		    velocity = pheromoneDir;
+		    //If pheromoneDir is (0,0), this will give us a food searching vector
+		    //Otherwise, it add a little randomness to movement.
+		    velocity.add(steerer.wander(velocity));
+	    }
         //endregion
 
         //region Public Methods and Reveals
