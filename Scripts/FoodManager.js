@@ -12,11 +12,15 @@ var AntColony = (function (AntColony) {
 		}());
 
 		that.update = function () {
-			food.forEach(f => f.update(canvasWidth, canvasHeight));
+			for (var f = 0, fl = food.length; f < fl; f++) {
+				food[f].update(canvasWidth, canvasHeight);
+			}
 		};
 
 		that.render = function (context) {
-			food.forEach(f => f.render(context));
+			for (var f = 0, fl = food.length; f < fl; f++) {
+				food[f].render(context);
+			}
 		};
 
 	    that.closestFood = function (pos) {

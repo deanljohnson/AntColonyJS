@@ -67,7 +67,9 @@ var AntColony = (function (AntColony) {
         };
 
         that.update = function () {
-	        foodPheromones.forEach(p => p.update());
+	        for (var p = 0, pl = foodPheromones.length; p < pl; p++) {
+		        foodPheromones[p].update();
+	        }
             removeEvaporatedPheromones();
         };
 

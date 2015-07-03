@@ -16,7 +16,7 @@ var AntColony = (function (AntColony) {
             if (!(other.hasOwnProperty("position") &&
                 other.hasOwnProperty("direction") &&
                 other.hasOwnProperty("getStrength"))) {
-                throw new Exception("The other object does not have the required properties");
+                throw new Error("The other object does not have the required properties");
             }
 
             var avgPos = AntColony.Vector.average([position, other.position]),
