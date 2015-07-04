@@ -16,13 +16,17 @@ var AntColony = (function (AntColony) {
 
         //region Public Methods and Reveals
         that.update = function (foodManager, pheromoneManager) {
-            ants.forEach(a => a.update(foodManager, pheromoneManager));
+	        for (var a = 0, al = ants.length; a < al; a++) {
+		        ants[a].update(foodManager, pheromoneManager);
+	        }
         };
 
         that.render = function(context){
             superRender.call(that, context);
 
-            ants.forEach(a => a.render(context));
+	        for (var a = 0, al = ants.length; a < al; a++) {
+		        ants[a].render(context);
+	        }
         };
 
         that.ants = ants;
